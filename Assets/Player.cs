@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -8,7 +9,8 @@ public class Player : MonoBehaviour
     public float moveSpeed;
     public float rotateAmount;
     float rot;
-
+    int score;
+    public GameObject winText;
 
     private void Awake()
     {
@@ -34,8 +36,6 @@ public class Player : MonoBehaviour
             {
                 rot = -rotateAmount;
             }
-
-
             transform.Rotate(0, 0, rot);
         }
     }
@@ -43,5 +43,24 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         rb.velocity = transform.up * moveSpeed;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Food")
+        {
+            Destroy(collision.gameObject);
+            score++;
+
+            if (score >= 5)
+            {
+                print("Lvl completed!");
+                winText.SetActive(true);
+            }
+        }
+        else if(collision.gameObject.tag == "Danger")
+        {
+            SceneManager.LoadScene("Game");
+        }
     }
 }
